@@ -5,7 +5,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	"github.com/zsbahtiar/ihsan-test/internal/logger"
+	"github.com/zsbahtiar/ihsan-test/internal/pkg/logger"
 	"go.uber.org/zap"
 	"time"
 )

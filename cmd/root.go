@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/zsbahtiar/ihsan-test/internal/logger"
+	"github.com/zsbahtiar/ihsan-test/internal/pkg/logger"
 	"log"
 	"os"
 
