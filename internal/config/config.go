@@ -12,6 +12,8 @@ type Config struct {
 		Password string
 		Name     string
 	}
+
+	AppPort string
 }
 
 func LoadConfig() (*Config, error) {
@@ -29,6 +31,8 @@ func LoadConfig() (*Config, error) {
 	config.Database.User = viper.GetString("DB_USER")
 	config.Database.Password = viper.GetString("DB_PASSWORD")
 	config.Database.Name = viper.GetString("DB_NAME")
+
+	config.AppPort = viper.GetString("APP_PORT")
 
 	return &config, nil
 }
