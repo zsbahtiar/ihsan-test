@@ -26,7 +26,7 @@ func migrateCmd() *cobra.Command {
 		Long:  `Commands to run database migrations: up, down, version, create`,
 	}
 
-	cmd.PersistentFlags().StringVarP(&migrationDir, "dir", "d", "migrations", "Migration files directory")
+	cmd.PersistentFlags().StringVarP(&migrationDir, "dir", "d", "migration", "Migration files directory")
 	cmd.PersistentFlags().StringVarP(&migrationExt, "ext", "e", "sql", "Migration files extension")
 
 	cmd.AddCommand(migrateUpCmd())
