@@ -17,5 +17,3 @@ COPY --from=0 /app/main .
 COPY --from=0 /app/migration ./migration
 
 EXPOSE 8080
-
-ENTRYPOINT ["./main"]

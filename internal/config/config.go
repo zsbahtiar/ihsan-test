@@ -1,38 +1,30 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"fmt"
+	"github.com/joho/godotenv"
+	"github.com/kelseyhightower/envconfig"
+	"os"
 )
 
 type Config struct {
 	Database struct {
-		Host     string
-		Port     string
-		User     string
-		Password string
-		Name     string
+		Host     string `envconfig:"DB_HOST" required:"true"`
+		Port     string `envconfig:"DB_PORT" required:"true"`
+		User     string `envconfig:"DB_USER" required:"true"`
+		Password string `envconfig:"DB_PASSWORD" required:"true"`
+		Name     string `envconfig:"DB_NAME" required:"true"`
 	}
-
-	AppPort string
+	AppPort string `envconfig:"APP_PORT" required:"true"`
 }
 
 func LoadConfig() (*Config, error) {
-	viper.SetConfigFile(".env")
-	viper.AutomaticEnv()
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		return nil, err
+	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
+		return nil, fmt.Errorf("error loading .env file: %s", err)
 	}
 
-	var config Config
-	config.Database.Host = viper.GetString("DB_HOST")
-	config.Database.Port = viper.GetString("DB_PORT")
-	config.Database.User = viper.GetString("DB_USER")
-	config.Database.Password = viper.GetString("DB_PASSWORD")
-	config.Database.Name = viper.GetString("DB_NAME")
+	var cfg Config
+	envconfig.MustProcess("", &cfg)
 
-	config.AppPort = viper.GetString("APP_PORT")
-
-	return &config, nil
+	return &cfg, nil
 }
