@@ -7,3 +7,7 @@ type RegisterCustomerResponse struct {
 type DepositResponse struct {
 	Saldo float64 `json:"saldo"`
 }
+
+type WithdrawResponse struct {
+	Saldo float64 `json:"saldo"`
+}

@@ -7,6 +7,7 @@ import (
 	"github.com/zsbahtiar/ihsan-test/internal/core/dto"
 	"github.com/zsbahtiar/ihsan-test/internal/core/entity"
 	"github.com/zsbahtiar/ihsan-test/internal/core/repository"
+	"github.com/zsbahtiar/ihsan-test/internal/pkg/response"
 	"math/rand"
 )
 
@@ -17,6 +18,7 @@ type accountUsecase struct {
 type AccountUsecase interface {
 	RegisterCustomer(ctx context.Context, req dto.RegisterCustomerRequest) (dto.RegisterCustomerResponse, error)
 	Deposit(ctx context.Context, req dto.DepositRequest) (dto.DepositResponse, error)
+	Withdraw(ctx context.Context, req dto.WithdrawRequest) (dto.WithdrawResponse, error)
 }
 
 func NewAccountUsecase(accountRepo repository.AccountRepository) AccountUsecase {
@@ -65,5 +67,34 @@ func (a *accountUsecase) Deposit(ctx context.Context, req dto.DepositRequest) (d
 	}
 
 	return dto.DepositResponse{Saldo: account.Balance}, nil
+
+}
+
+func (a *accountUsecase) Withdraw(ctx context.Context, req dto.WithdrawRequest) (dto.WithdrawResponse, error) {
+	account, err := a.accountRepo.GetAccountByAccountNumber(ctx, req.NoRekening)
+	if err != nil {
+		return dto.WithdrawResponse{}, err
+	}
+
+	if req.Nominal > account.Balance {
+		return dto.WithdrawResponse{}, response.ErrInsufficientBalance
+	}
+
+	account.Balance -= req.Nominal
+	transaction := entity.Transaction{
+		Uuid:            uuid.NewString(),
+		AccountId:       account.Id,
+		TransactionType: entity.TransactionWithdraw,
+		Amount:          req.Nominal,
+	}
+
+	err = a.accountRepo.CreateTransaction(ctx, transaction, account)
+	if err != nil {
+		return dto.WithdrawResponse{}, err
+	}
+
+	return dto.WithdrawResponse{
+		Saldo: account.Balance,
+	}, nil
 
 }
