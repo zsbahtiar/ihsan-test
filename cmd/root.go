@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/zsbahtiar/ihsan-test/internal/logger"
 	"log"
 	"os"
 
@@ -22,8 +23,10 @@ func init() {
 	if err != nil {
 		log.Fatal("Cannot load config:", err)
 	}
+	logger.Init()
 
 	rootCmd.AddCommand(migrateCmd())
+	rootCmd.AddCommand(serverCmd)
 }
 
 func Execute() {
