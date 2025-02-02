@@ -19,6 +19,7 @@ type AccountUsecase interface {
 	RegisterCustomer(ctx context.Context, req dto.RegisterCustomerRequest) (dto.RegisterCustomerResponse, error)
 	Deposit(ctx context.Context, req dto.DepositRequest) (dto.DepositResponse, error)
 	Withdraw(ctx context.Context, req dto.WithdrawRequest) (dto.WithdrawResponse, error)
+	GetAccountDetail(ctx context.Context, accountNumber string) (dto.GetAccountDetailResponse, error)
 }
 
 func NewAccountUsecase(accountRepo repository.AccountRepository) AccountUsecase {
@@ -97,4 +98,16 @@ func (a *accountUsecase) Withdraw(ctx context.Context, req dto.WithdrawRequest) 
 		Saldo: account.Balance,
 	}, nil
 
+}
+
+func (a *accountUsecase) GetAccountDetail(ctx context.Context, accountNumber string) (dto.GetAccountDetailResponse, error) {
+	account, err := a.accountRepo.GetAccountByAccountNumber(ctx, accountNumber)
+	if err != nil {
+		return dto.GetAccountDetailResponse{}, err
+	}
+
+	return dto.GetAccountDetailResponse{
+		NoRekening: account.AccountNumber,
+		Saldo:      account.Balance,
+	}, err
 }

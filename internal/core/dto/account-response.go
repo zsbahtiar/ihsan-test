@@ -11,3 +11,8 @@ type DepositResponse struct {
 type WithdrawResponse struct {
 	Saldo float64 `json:"saldo"`
 }
+
+type GetAccountDetailResponse struct {
+	NoRekening string  `json:"no_rekening"`
+	Saldo      float64 `json:"saldo"`
+}

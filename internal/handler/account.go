@@ -16,6 +16,7 @@ type AccountHandler interface {
 	Register(ctx *fiber.Ctx) error
 	Deposit(ctx *fiber.Ctx) error
 	Withdraw(ctx *fiber.Ctx) error
+	GetAccountDetail(ctx *fiber.Ctx) error
 }
 
 func NewAccountHandler(accountUsecase module.AccountUsecase) AccountHandler {
@@ -60,6 +61,17 @@ func (a *accountHandler) Withdraw(ctx *fiber.Ctx) error {
 		})
 	}
 	data, err := a.accountUsecase.Withdraw(ctx.Context(), req)
+	if err != nil {
+		return response.WriteError(ctx, err)
+	}
+
+	return response.WriteSuccess(ctx, http.StatusOK, data)
+}
+
+func (a *accountHandler) GetAccountDetail(ctx *fiber.Ctx) error {
+	accountNumber := ctx.Params("no_rekening")
+
+	data, err := a.accountUsecase.GetAccountDetail(ctx.Context(), accountNumber)
 	if err != nil {
 		return response.WriteError(ctx, err)
 	}
