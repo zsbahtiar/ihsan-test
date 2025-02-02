@@ -1,5 +1,5 @@
 -- Migration Down: create-table-customers
 
 BEGIN;
-DROP TABLE IF NOT EXISTS customers;
+DROP TABLE IF EXISTS customers;
 COMMIT;
