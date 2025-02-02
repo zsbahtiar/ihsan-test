@@ -16,6 +16,7 @@ type accountUsecase struct {
 
 type AccountUsecase interface {
 	RegisterCustomer(ctx context.Context, req dto.RegisterCustomerRequest) (dto.RegisterCustomerResponse, error)
+	Deposit(ctx context.Context, req dto.DepositRequest) (dto.DepositResponse, error)
 }
 
 func NewAccountUsecase(accountRepo repository.AccountRepository) AccountUsecase {
@@ -42,4 +43,27 @@ func (a *accountUsecase) RegisterCustomer(ctx context.Context, req dto.RegisterC
 	return dto.RegisterCustomerResponse{
 		NoRekening: account.AccountNumber,
 	}, err
+}
+
+func (a *accountUsecase) Deposit(ctx context.Context, req dto.DepositRequest) (dto.DepositResponse, error) {
+	account, err := a.accountRepo.GetAccountByAccountNumber(ctx, req.NoRekening)
+	if err != nil {
+		return dto.DepositResponse{}, err
+	}
+
+	account.Balance += req.Nominal
+	transaction := entity.Transaction{
+		Uuid:            uuid.NewString(),
+		AccountId:       account.Id,
+		TransactionType: entity.TransactionDeposit,
+		Amount:          req.Nominal,
+	}
+
+	err = a.accountRepo.CreateTransaction(ctx, transaction, account)
+	if err != nil {
+		return dto.DepositResponse{}, err
+	}
+
+	return dto.DepositResponse{Saldo: account.Balance}, nil
+
 }

@@ -7,5 +7,6 @@ import (
 
 func Setup(app *fiber.App, accountHandler handler.AccountHandler) {
 	app.Post("/daftar", accountHandler.Register)
+	app.Post("/tabung", accountHandler.Deposit)
 
 }

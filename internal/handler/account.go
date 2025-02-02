@@ -14,6 +14,7 @@ type accountHandler struct {
 
 type AccountHandler interface {
 	Register(ctx *fiber.Ctx) error
+	Deposit(ctx *fiber.Ctx) error
 }
 
 func NewAccountHandler(accountUsecase module.AccountUsecase) AccountHandler {
@@ -33,4 +34,19 @@ func (a *accountHandler) Register(ctx *fiber.Ctx) error {
 	}
 
 	return response.WriteSuccess(ctx, http.StatusCreated, data)
+}
+
+func (a *accountHandler) Deposit(ctx *fiber.Ctx) error {
+	var req dto.DepositRequest
+	if err := ctx.BodyParser(&req); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"remark": "Invalid request payload",
+		})
+	}
+	data, err := a.accountUsecase.Deposit(ctx.Context(), req)
+	if err != nil {
+		return response.WriteError(ctx, err)
+	}
+
+	return response.WriteSuccess(ctx, http.StatusOK, data)
 }

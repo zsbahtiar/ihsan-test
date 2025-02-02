@@ -23,4 +23,5 @@ var (
 	ErrDuplicateIdentityNumber = New(http.StatusBadRequest, "DUPLICATE_IDENTITY", "identity number already exists")
 	ErrDuplicatePhoneNumber    = New(http.StatusBadRequest, "DUPLICATE_PHONE", "phone number already exists")
 	ErrDuplicateAccountNumber  = New(http.StatusBadRequest, "DUPLICATE_ACCOUNT", "account number already exists")
+	ErrAccountNotFound         = New(http.StatusNotFound, "ACCOUNT_NOT_FOUND", "account not found")
 )

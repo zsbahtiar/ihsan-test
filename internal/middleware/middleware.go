@@ -46,6 +46,13 @@ func Logger() fiber.Handler {
 			return err
 		}
 
+		if c.Response().StatusCode() >= 400 {
+			body := c.Response().Body()
+			fields = append(fields, zap.String("response", string(body)))
+			logger.Error("Request failed", fields...)
+			return err
+		}
+
 		logger.Info("Request completed", fields...)
 		return nil
 	}
