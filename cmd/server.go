@@ -4,7 +4,12 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cobra"
+	"github.com/zsbahtiar/ihsan-test/internal/core/module"
+	"github.com/zsbahtiar/ihsan-test/internal/core/repository"
+	"github.com/zsbahtiar/ihsan-test/internal/handler"
 	"github.com/zsbahtiar/ihsan-test/internal/middleware"
+	"github.com/zsbahtiar/ihsan-test/internal/pkg/database"
+	"github.com/zsbahtiar/ihsan-test/internal/route"
 	"time"
 )
 
@@ -24,6 +29,13 @@ func runServer() error {
 		IdleTimeout:  30 * time.Second,
 	})
 	middleware.SetupMiddleware(app)
+	db := database.NewPostgres(cfg.Database.User, cfg.Database.Password, cfg.Database.Host, cfg.Database.Port, cfg.Database.Name)
+	defer db.Close()
+	accountRepo := repository.NewAccountRepository(db)
+	accountUsecase := module.NewAccountUsecase(accountRepo)
+	accountHandler := handler.NewAccountHandler(accountUsecase)
+
+	route.Setup(app, accountHandler)
 
 	addr := fmt.Sprintf(":%s", cfg.AppPort)
 	return app.Listen(addr)
